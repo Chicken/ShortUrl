@@ -4,14 +4,20 @@
   "description": "url shortener side project because i am bored",
   "main": "index.js",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "test": "nodemon ."
   },
   "author": "Antti.Codes",
   "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^7.1.0",
+    "body-parser": "^1.19.0",
     "enmap": "^5.3.1",
     "express": "^4.17.1",
-    "helmet": "^3.23.2"
+    "helmet": "^3.23.2",
+    "shortid": "^2.2.15"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }

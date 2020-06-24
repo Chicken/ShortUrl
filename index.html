@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UrlShortener</title>
+    </head>
+    <body>
+        <h1>UrlShortener</h1>
+        <input required placeholder="Url" id="url" type=text>
+        <button id="submit">Shorten</button>
+        <p id="output"></p>
+        <script>
+            document.getElementById("submit").addEventListener("click", async()=>{
+                let url = document.getElementById("url").value;
+                let response = await fetch("/new", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({url: url})
+                })
+                response = await response.json()
+                document.getElementById("output").innerHTML = response.text;
+            })
+        </script>
+    </body>
+</html>
