@@ -3,7 +3,6 @@ const helmet = require("helmet");
 const bodyparser = require("body-parser");
 const shortid = require('shortid');
 const Enmap = require("enmap");
-const { response } = require("express");
 const db = new Enmap({ name: "urls" });
 
 const HOSTNAME = "http://internal.antti.codes:9090/"
