@@ -5,7 +5,7 @@ const shortid = require('shortid');
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
 
-const HOSTNAME = "http://internal.antti.codes:9090/"
+const HOSTNAME = "https://s.antti.codes"
 
 db.ensure("count", 0)
 
