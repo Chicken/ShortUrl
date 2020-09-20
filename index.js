@@ -5,42 +5,42 @@ const shortid = require('shortid');
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
 
-const HOSTNAME = "http://internal.antti.codes:9090/"
-
-db.ensure("count", 0)
+const HOSTNAME = "https://s.antti.codes/";
+const PORT = 8888;
 
 const app = express();
 
-app.use(helmet())
-app.use(bodyparser.json())
+app.use(helmet());
+app.use(bodyparser.json());
 
-app.get("/", (req,res)=>{
-    res.sendFile(__dirname + "\\index.html")
+app.get("/", (_, res)=>{
+    res.sendFile(__dirname + "/index.html");
 })
 
-app.post("/new", (req,res)=>{
+app.post("/new", (req, res)=>{
     let url = req.body.url;
 
-    let existing = db.findKey(v=>v.url==req.body.url)
+    let existing = db.findKey(v=>v.url==req.body.url);
     if(existing) {
         return res.send({
             text: `Created! ${HOSTNAME}${existing}`
-        })
+        });
     }
 
-    let short = shortid.generate()
-    db.set(short, {
-        url: url,
-        clicks: 0
-    })
     if(validateUrl(url)) {
+        let short = shortid.generate();
+        db.set(short, {
+            url: url,
+            clicks: 0,
+            created: new Date().toUTCString()
+        });
         res.send({
             text: `Created! ${HOSTNAME}${short}`
-        })
+        });
     } else {
         res.send({
             text: "Invalid url"
-        })
+        });
     }
 })
 
@@ -54,14 +54,16 @@ app.get("/:id", (req,res)=>{
 })
 
 app.get("/info/:id", (req,res)=>{
-    let result = "none"
     if(db.has(req.params.id)){
-        result = `${db.get(req.params.id, "url")} | Clicks: ${db.get(req.params.id, "clicks")}`
+        let data = db.get(req.params.id);
+        res.send(`${req.params.id} => ${data.url}<br>`
+                +`Clicks:  ${data.clicks}<br>`
+                +`Created: ${data.created}<br>`);
     }
-    res.send(`${req.params.id} => ${result}`)
+    res.send(`Non existant`)
 })
 
-app.listen(8080, ()=>{
+app.listen(PORT, ()=>{
     console.log("Listening")
 })
 

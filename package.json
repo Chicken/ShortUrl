@@ -4,8 +4,7 @@
   "description": "url shortener side project because i am bored",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
-    "test": "nodemon ."
+    "start": "node ."
   },
   "author": "Antti.Codes",
   "license": "ISC",
@@ -16,8 +15,5 @@
     "express": "^4.17.1",
     "helmet": "^3.23.2",
     "shortid": "^2.2.15"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.4"
   }
 }
