@@ -4,9 +4,7 @@ const bodyparser = require("body-parser");
 const shortid = require('shortid');
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
-
-const HOSTNAME = "https://s.antti.codes/";
-const PORT = 8888;
+const { hostname, port } = require("./config.json");
 
 const app = express();
 
@@ -23,7 +21,7 @@ app.post("/new", (req, res)=>{
     let existing = db.findKey(v=>v.url==req.body.url);
     if(existing) {
         return res.send({
-            text: `Created! ${HOSTNAME}${existing}`
+            text: `Created! ${hostname}${existing}`
         });
     }
 
@@ -35,7 +33,7 @@ app.post("/new", (req, res)=>{
             created: new Date().toUTCString()
         });
         res.send({
-            text: `Created! ${HOSTNAME}${short}`
+            text: `Created! ${hostname}${short}`
         });
     } else {
         res.send({
@@ -63,7 +61,7 @@ app.get("/info/:id", (req,res)=>{
     res.send(`Non existant`)
 })
 
-app.listen(PORT, ()=>{
+app.listen(port, ()=>{
     console.log("Listening")
 })
 
