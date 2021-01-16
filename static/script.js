@@ -14,7 +14,7 @@ customUrlInput.value = "";
 
 urlInput.addEventListener("keypress", e => {
     if(e.key == "Enter") submitButton.click();
-})
+});
 
 submitButton.addEventListener("click", async () => {
     let url = urlInput.value;
@@ -66,8 +66,9 @@ submitButton.addEventListener("click", async () => {
 customCheck.addEventListener("click", () => {
     if(customCheck.checked) customForm.classList.remove("hidden");
     else customForm.classList.add("hidden");
-})
+});
 
+// eslint-disable-next-line no-unused-vars
 const copy = str => {
     let el = document.createElement("textarea");
     el.value = str;
