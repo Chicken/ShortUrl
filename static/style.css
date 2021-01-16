@@ -1,0 +1,137 @@
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    margin: 10px;
+}
+
+.container {
+    width: 600px;
+    height: 400px;
+    background-color: rgb(160, 0, 160);
+    border-radius: 5vw;
+    align-items: center;
+    text-align: center;
+}
+
+.underlay {
+    width: 590px;
+    height: 390px;
+    box-shadow: 0 0 8vw 8vw purple;
+    border-radius: 5vw;
+}
+
+body {
+    color: white;
+    background-color: pink;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+    color: cyan;
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 50px; 
+    margin: 20px;
+}
+
+.copy {
+    transition-property: transform;
+    transition-duration: 0.5s;
+    background: none;
+    border: none;
+    color: cyan;
+    outline: none !important;
+    font-size: 1em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.copy:hover {
+    transform: scale(1.025);
+}
+
+.copy:active {
+    padding: 0px 8px;
+    border: none;
+    outline: none !important;
+    color: pink;
+}
+
+#credit {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 5px;
+}
+
+#submit {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 80px;
+    height: 30px;
+    border: none;
+    background-color: pink;
+    outline: none !important;
+    border-radius: 10px;
+}
+
+#submit:active {
+    padding: 0px 8px;
+    border: none;
+    outline: none !important;
+    transform: scale(1.1);
+}
+
+.hidden {
+    display: none;
+}
+
+input[type=text], input[type=password]  {
+    outline: none !important;
+    margin-bottom: 10px;
+    width: 50%;
+    height: 25px;
+    padding: 5px;
+    border: none;
+    background-color: pink;
+    border-radius: 10px;
+}
+
+p {
+    padding: 2px;
+    margin-top: -6px;
+    margin-bottom: 6px;
+}
+
+input[type=checkbox] {
+    outline: none !important;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: pink;
+    padding: 8px;
+    margin: 0px;
+    margin-left: 8px;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    transform: translateY(20%);
+}
+
+input[type=checkbox]:checked {
+    outline: none !important;
+	background-color: rgb(219, 141, 154);
+	color: #99a1a7;
+}
+
+input[type=checkbox]:checked:after {
+	content: '\2714';
+	font-size: 12px;
+	position: absolute;
+	top: -1px;
+	left: 3px;
+	color: white;
+}
