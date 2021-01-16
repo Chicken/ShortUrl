@@ -77,13 +77,14 @@ app.post("/new", (req, res) => {
 });
 
 app.get("/:id", (req, res) => {
-    if(req.originalUrl.endsWith("?")) {
-        if(db.has(req.params.id)) {
-            let { url, clicks, created, creator } = db.get(req.params.id);
+    if(req.originalUrl.endsWith("?") || req.originalUrl.endsWith("+")) {
+        let id = req.params.id.replace("+", "");
+        if(db.has(id)) {
+            let { url, clicks, created, creator } = db.get(id);
             if(creator == undefined) {
                 res.status(200).send({
                     status: 200,
-                    id: req.params.id,
+                    id,
                     url,
                     clicks,
                     created
@@ -91,7 +92,7 @@ app.get("/:id", (req, res) => {
             } else {
                 res.status(200).send({
                     status: 200,
-                    id: req.params.id,
+                    id,
                     url,
                     clicks,
                     creator,
