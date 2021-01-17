@@ -10,7 +10,7 @@
 .container {
     width: 600px;
     height: 400px;
-    background-color: rgb(160, 0, 160);
+    background-color: #800080;
     border-radius: 5vw;
     align-items: center;
     text-align: center;
@@ -19,13 +19,13 @@
 .underlay {
     width: 590px;
     height: 390px;
-    box-shadow: 0 0 8vw 8vw purple;
-    border-radius: 5vw;
+    box-shadow: 0 0 6vw 8vw #640164;
+    border-radius: 8vw;
 }
 
 body {
     color: white;
-    background-color: pink;
+    background-color: #181A1B;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -37,6 +37,11 @@ a {
 h1 {
     font-size: 50px; 
     margin: 20px;
+    color: pink;
+}
+
+#output {
+    color: pink;
 }
 
 .copy {
@@ -62,6 +67,7 @@ h1 {
 }
 
 #credit {
+    color: pink;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
