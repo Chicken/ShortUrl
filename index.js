@@ -4,8 +4,9 @@ const bodyparser = require("body-parser");
 const { customAlphabet } = require("nanoid");
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
-const { hostname, port, users } = require("./config.json");
+const { hostname, port, users, whitelist } = require("./config.json");
 const { createHash } = require("crypto");
+const ratelimits = new Set();
 
 let hash = pw => createHash("sha256").update(pw).digest("hex"); 
 
@@ -19,7 +20,23 @@ app.use(bodyparser.json());
 app.use("/", express.static("static"));
 
 app.post("/new", (req, res) => {
-    let url = req.body?.url;
+    let ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
+
+    if(ratelimits.has(ip)) {
+        res.status(429).send({
+            status: 429
+        });
+        return;
+    }
+
+    if(!whitelist.includes(ip)) {
+        ratelimits.add(ip);
+        setTimeout(() => {
+            ratelimits.delete(ip);
+        }, 5000);
+    }
+
+    let url = req.body.url;
     if(typeof url != "string" || url.length == 0) {
         res.status(400).send({
             status: 400
@@ -115,5 +132,5 @@ app.get("/:id", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Webserver on line on ${hostname}. Running on port ${port}.`);
+    console.log(`Webserver online on ${hostname}. Running on port ${port}.`);
 });

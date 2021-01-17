@@ -1,6 +1,9 @@
 {
     "hostname": "https://antti.link/",
     "port": 8888,
+    "whitelist": [
+        "127.0.0.1"
+    ],
     "users": [
         {
             "name": "Antti",
