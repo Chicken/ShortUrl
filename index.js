@@ -4,7 +4,7 @@ const bodyparser = require("body-parser");
 const { customAlphabet } = require("nanoid");
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
-const { hostname, port, users, whitelist } = require("./config.json");
+const { hostname, port, users, whitelist, requestPerMinPerIp } = require("./config.json");
 const { createHash } = require("crypto");
 const ratelimits = new Set();
 
@@ -33,7 +33,7 @@ app.post("/new", (req, res) => {
         ratelimits.add(ip);
         setTimeout(() => {
             ratelimits.delete(ip);
-        }, 5000);
+        }, 1000 * 60 / requestPerMinPerIp);
     }
 
     let url = req.body.url;

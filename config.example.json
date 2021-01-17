@@ -1,6 +1,7 @@
 {
     "hostname": "https://antti.link/",
     "port": 8888,
+    "requestPerMinPerIp": 6,
     "whitelist": [
         "127.0.0.1"
     ],

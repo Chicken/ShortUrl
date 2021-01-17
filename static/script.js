@@ -49,7 +49,7 @@ submitButton.addEventListener("click", async () => {
         outputField.innerHTML = "Internal server error occured!";
         break;
     case 429:
-        outputField.innerHTML = "You are being ratelimited!<br>You can create an url once every 5 seconds.";
+        outputField.innerHTML = "You are being ratelimited!<br>Please wait a moment.";
         break;
     case 401:
         outputField.innerHTML = "Invalid password!";
