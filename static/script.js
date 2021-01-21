@@ -1,5 +1,6 @@
 /* globals document fetch */
 let customCheck = document.getElementById("custom");
+let forceCheck = document.getElementById("force");
 let urlInput = document.getElementById("url");
 let passwordInput = document.getElementById("password");
 let customUrlInput = document.getElementById("customUrl");
@@ -8,6 +9,7 @@ let outputField = document.getElementById("output");
 let customForm = document.getElementById("customForm");
 
 customCheck.checked = false;
+forceCheck.checked = false;
 urlInput.value = "";
 passwordInput.value = "";
 customUrlInput.value = "";
@@ -30,7 +32,7 @@ submitButton.addEventListener("click", async () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ custom: true, url, password: passwordInput.value, customUrl: customUrlInput.value})
+            body: JSON.stringify({ custom: true, url, password: passwordInput.value, customUrl: customUrlInput.value, force: forceCheck.checked })
         });
         passwordInput.value = "";
         customUrlInput.value = "";
@@ -40,7 +42,7 @@ submitButton.addEventListener("click", async () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ url })
+            body: JSON.stringify({ url, force: forceCheck.checked })
         });
     }
     let { status, url: short } = await response.json();
@@ -50,6 +52,9 @@ submitButton.addEventListener("click", async () => {
         break;
     case 429:
         outputField.innerHTML = "You are being ratelimited!<br>Please wait a moment.";
+        break;
+    case 409:
+        outputField.innerHTML = "Short url already exists!<br>Use the force option to bypass.";
         break;
     case 401:
         outputField.innerHTML = "Invalid password!";

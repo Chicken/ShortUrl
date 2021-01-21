@@ -120,7 +120,8 @@ input[type=checkbox] {
     background-color: pink;
     padding: 8px;
     margin: 0px;
-    margin-left: 8px;
+    margin-left: 6px;
+    margin-right: 6px;
     border-radius: 4px;
     display: inline-block;
     position: relative;

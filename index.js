@@ -49,16 +49,23 @@ app.post("/new", (req, res) => {
         let pwHash = hash(req.body.password);
         let user = users.find(u => u.password == pwHash);
         if(user != undefined) {
-            db.set(req.body.customUrl, {
-                url,
-                clicks: 0,
-                creator: user.name,
-                created: new Date().toUTCString()
-            });
-            res.status(201).send({
-                status: 201,
-                url: `${hostname}${req.body.customUrl}`
-            });
+            let existing = db.has(req.body.customUrl);
+            if(existing && !req.body.force) {
+                res.status(409).send({
+                    status: 409
+                });
+            } else {
+                db.set(req.body.customUrl, {
+                    url,
+                    clicks: 0,
+                    creator: user.name,
+                    created: new Date().toUTCString()
+                });
+                res.status(201).send({
+                    status: 201,
+                    url: `${hostname}${req.body.customUrl}`
+                });
+            }
         } else {
             res.status(401).send({
                 status: 401
@@ -66,7 +73,7 @@ app.post("/new", (req, res) => {
         }
     } else {
         let existing = db.findKey(v => v.url == url);
-        if(existing) {
+        if(existing && !req.body.force) {
             res.status(200).send({
                 status: 200,
                 url: `${hostname}${existing}`
