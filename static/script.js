@@ -1,12 +1,12 @@
 /* globals document fetch */
-let customCheck = document.getElementById("custom");
-let forceCheck = document.getElementById("force");
-let urlInput = document.getElementById("url");
-let passwordInput = document.getElementById("password");
 let customUrlInput = document.getElementById("customUrl");
+let passwordInput = document.getElementById("password");
 let submitButton = document.getElementById("submit");
+let customCheck = document.getElementById("custom");
 let outputField = document.getElementById("output");
 let customForm = document.getElementById("customForm");
+let forceCheck = document.getElementById("force");
+let urlInput = document.getElementById("url");
 
 customCheck.checked = false;
 forceCheck.checked = false;
@@ -20,7 +20,6 @@ urlInput.addEventListener("keypress", e => {
 
 submitButton.addEventListener("click", async () => {
     let url = urlInput.value;
-    urlInput.value = "";
     if (url == "") {
         outputField.innerHTML = "No URL provided!";
         return;
@@ -34,8 +33,6 @@ submitButton.addEventListener("click", async () => {
             },
             body: JSON.stringify({ custom: true, url, password: passwordInput.value, customUrl: customUrlInput.value, force: forceCheck.checked })
         });
-        passwordInput.value = "";
-        customUrlInput.value = "";
     } else {
         response = await fetch("/new", {
             method: "POST",
@@ -46,6 +43,7 @@ submitButton.addEventListener("click", async () => {
         });
     }
     let { status, url: short } = await response.json();
+    let created = false;
     switch(status) {
     case 500:
         outputField.innerHTML = "Internal server error occured!";
@@ -58,15 +56,27 @@ submitButton.addEventListener("click", async () => {
         break;
     case 401:
         outputField.innerHTML = "Invalid password!";
+        passwordInput.value = "";
         break;
     case 400:
         outputField.innerHTML = "Invalid URL provided!";
         break;
     case 201:
-        outputField.innerHTML = `Created a new short url!<br>Click to copy: <button class="copy" title="Copy to clipboard" onclick="copy('${short}')">${short}</button>`;
-        break;
+        created = true;
     case 200:
-        outputField.innerHTML = `Found an existing short url!<br>Click to copy: <button class="copy" title="Copy to clipboard" onclick="copy('${short}')">${short}</button>`;
+        outputField.innerHTML = `
+        ${created ? "Here's your short url!" : "Found an existing short url!"} <br>
+        Click to copy:
+        <div class="tooltipContainer" onmouseout="resetTooltip()">
+            <span class="copy" onclick="copy('${short}')">
+                <span id="tooltip">Click to copy</span>
+                ${short}
+            </span>
+        </div>
+        `;
+        urlInput.value = "";
+        passwordInput.value = "";
+        customUrlInput.value = "";
         break;
     }
 });
@@ -78,6 +88,8 @@ customCheck.addEventListener("click", () => {
 
 // eslint-disable-next-line no-unused-vars
 const copy = str => {
+    let tooltip = document.getElementById("tooltip");
+    tooltip.innerHTML = "Copied!";
     let el = document.createElement("textarea");
     el.value = str;
     el.setAttribute("readonly", "");
@@ -87,4 +99,10 @@ const copy = str => {
     el.select();
     document.execCommand("copy");
     document.body.removeChild(el);
+};
+
+// eslint-disable-next-line no-unused-vars
+let resetTooltip = () => {
+    let tooltip = document.getElementById("tooltip");
+    tooltip.innerHTML = "Click to copy";
 };
