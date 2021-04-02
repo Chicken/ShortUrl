@@ -1,6 +1,5 @@
 const express = require("express");
 const helmet = require("helmet");
-const bodyparser = require("body-parser");
 const { customAlphabet } = require("nanoid");
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
@@ -14,13 +13,17 @@ let genId = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop
 
 const app = express();
 
+// Explanation below
+app.set("trust proxy", true);
+
 app.use(helmet());
-app.use(bodyparser.json());
+app.use(express.json());
 
 app.use("/", express.static("static"));
 
 app.post("/new", (req, res) => {
-    let ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
+    // My production server is behind apache proxy and cloudflare
+    let ip = req.ips[req.ips.length - 2];
 
     if(ratelimits.has(ip)) {
         res.status(429).send({
