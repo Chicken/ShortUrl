@@ -16,7 +16,10 @@ const app = express();
 // Explanation below
 app.set("trust proxy", true);
 
-app.use(helmet());
+app.use(helmet({
+    // ffs don't frick up my inline js
+    contentSecurityPolicy: false
+}));
 app.use(express.json());
 
 app.use("/", express.static("static"));
