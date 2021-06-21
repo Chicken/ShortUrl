@@ -1,20 +1,20 @@
 const express = require("express");
 const helmet = require("helmet");
+const ratelimit = require("express-rate-limit");
 const { customAlphabet } = require("nanoid");
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
-const { hostname, port, users, whitelist, requestPerMinPerIp } = require("./config.json");
+const { hostname, port, users, whitelist, requestsPerMinPerIp, proxyLevel } = require("./config.json");
 const { createHash } = require("crypto");
-const ratelimits = new Set();
 
-let hash = pw => createHash("sha256").update(pw).digest("hex"); 
+// much secure
+let hash = pw => createHash("sha256").update(pw).digest("hex");
 
 let genId = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 6);
 
 const app = express();
 
-// Explanation below
-app.set("trust proxy", true);
+app.set("trust proxy", proxyLevel > 0);
 
 app.use(helmet({
     // ffs don't frick up my inline js
@@ -24,24 +24,16 @@ app.use(express.json());
 
 app.use("/", express.static("static"));
 
-app.post("/new", (req, res) => {
-    // My production server is behind apache proxy and cloudflare
-    let ip = req.ips[req.ips.length - 2];
-
-    if(ratelimits.has(ip)) {
-        res.status(429).send({
-            status: 429
-        });
-        return;
+app.post("/new", ratelimit({
+    max: requestsPerMinPerIp,
+    message: { status: 429 },
+    keyGenerator: (req) => {
+        return proxyLevel > 0 ? req.ips.reverse()[proxyLevel] : req.ip;
+    },
+    skip: (req) => {
+        return whitelist.includes(proxyLevel > 0 ? req.ips.reverse()[proxyLevel] : req.ip);
     }
-
-    if(!whitelist.includes(ip)) {
-        ratelimits.add(ip);
-        setTimeout(() => {
-            ratelimits.delete(ip);
-        }, 1000 * 60 / requestPerMinPerIp);
-    }
-
+}), (req, res) => {
     let url = req.body.url;
     if(typeof url != "string" || url.length == 0) {
         res.status(400).send({
