@@ -1,5 +1,5 @@
 {
-  "name": "urlshortener",
+  "name": "shorturl",
   "version": "1.0.0",
   "description": "url shortener side project because i am bored",
   "main": "index.js",
