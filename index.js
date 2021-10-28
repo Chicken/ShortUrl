@@ -18,8 +18,14 @@ app.set("trust proxy", proxyLevel > 0);
 
 app.use(helmet({
     // ffs don't frick up my inline js
-    contentSecurityPolicy: false
+    contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+            "script-src": ["'self'", "'unsafe-inline'"]
+        }
+    }
 }));
+
 app.use(express.json());
 
 app.use("/", express.static("static"));
