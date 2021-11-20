@@ -1,6 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
 const ratelimit = require("express-rate-limit");
+const cors = require("cors");
 const { customAlphabet } = require("nanoid");
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
@@ -24,6 +25,10 @@ app.use(helmet({
             "script-src": ["'self'", "'unsafe-inline'"]
         }
     }
+}));
+
+app.use(cors({
+  origin: "*"
 }));
 
 app.use(express.json());
