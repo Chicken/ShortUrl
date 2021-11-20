@@ -9,7 +9,7 @@
   "author": "antti@antti.codes",
   "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^7.4.3",
+    "better-sqlite3": "^7.4.5",
     "cors": "^2.8.5",
     "enmap": "^5.8.7",
     "express": "^4.17.1",
