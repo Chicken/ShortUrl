@@ -2,7 +2,7 @@
   "name": "shorturl",
   "version": "1.0.0",
   "description": "url shortener side project because i am bored",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "node ."
   },
@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
     "enmap": "^5.8.7",
     "express": "^4.17.1",
     "express-rate-limit": "^5.5.1",

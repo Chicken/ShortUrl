@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const ratelimit = require("express-rate-limit");
@@ -5,7 +6,9 @@ const cors = require("cors");
 const { customAlphabet } = require("nanoid");
 const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
-const { hostname, port, users, whitelist, requestsPerMinPerIp, proxyLevel } = require("./config.json");
+const { HOSTNAME, PORT, USERS, WHITELIST, REQUESTSPERMINPERIP } = process.env;
+const users = USERS.split(";").map(s => s.split(":"));
+const whitelist = whitelist.split(",");
 const { createHash } = require("crypto");
 
 // much secure
@@ -15,7 +18,7 @@ let genId = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop
 
 const app = express();
 
-app.set("trust proxy", proxyLevel > 0);
+app.set("trust proxy", "loopback, linklocal");
 
 app.use(helmet({
     // ffs don't frick up my inline js
@@ -36,14 +39,10 @@ app.use(express.json());
 app.use("/", express.static("static"));
 
 app.post("/new", ratelimit({
-    max: requestsPerMinPerIp,
+    max: REQUESTSPERMINPERIP,
     message: { status: 429 },
-    keyGenerator: (req) => {
-        return proxyLevel > 0 ? req.ips.reverse()[proxyLevel] : req.ip;
-    },
-    skip: (req) => {
-        return whitelist.includes(proxyLevel > 0 ? req.ips.reverse()[proxyLevel] : req.ip);
-    }
+    keyGenerator: (req) => req.ip,
+    skip: (req) => whitelist.includes(req.ip)
 }), (req, res) => {
     let url = req.body.url;
     if(typeof url != "string" || url.length == 0) {
@@ -56,7 +55,7 @@ app.post("/new", ratelimit({
 
     if(req.body.custom) {
         let pwHash = hash(req.body.password);
-        let user = users.find(u => u.password == pwHash);
+        let user = users.find(([,p]) => p === pwHash);
         if(user != undefined) {
             let existing = db.has(req.body.customUrl);
             if(existing && !req.body.force) {
@@ -67,12 +66,12 @@ app.post("/new", ratelimit({
                 db.set(req.body.customUrl, {
                     url,
                     clicks: 0,
-                    creator: user.name,
+                    creator: user[0],
                     created: new Date().toUTCString()
                 });
                 res.status(201).send({
                     status: 201,
-                    url: `${hostname}${req.body.customUrl}`
+                    url: `${HOSTNAME}${req.body.customUrl}`
                 });
             }
         } else {
@@ -85,7 +84,7 @@ app.post("/new", ratelimit({
         if(existing && !req.body.force) {
             res.status(200).send({
                 status: 200,
-                url: `${hostname}${existing}`
+                url: `${HOSTNAME}${existing}`
             });
         } else {
             let short = genId();
@@ -102,7 +101,7 @@ app.post("/new", ratelimit({
                 });
                 res.status(201).send({
                     status: 201,
-                    url: `${hostname}${short}`
+                    url: `${HOSTNAME}${short}`
                 });
             }
         }
@@ -147,6 +146,6 @@ app.get("/:id", (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Webserver online on ${hostname}. Running on port ${port}.`);
+app.listen(PORT, () => {
+    console.log(`Webserver online on ${HOSTNAME}. Running on port ${PORT}.`);
 });
