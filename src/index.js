@@ -8,7 +8,7 @@ const Enmap = require("enmap");
 const db = new Enmap({ name: "urls" });
 const { HOSTNAME, PORT, USERS, WHITELIST, REQUESTSPERMINPERIP } = process.env;
 const users = USERS.split(";").map(s => s.split(":"));
-const whitelist = whitelist.split(",");
+const whitelist = WHITELIST.split(",");
 const { createHash } = require("crypto");
 
 // much secure
