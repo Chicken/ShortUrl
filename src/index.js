@@ -18,7 +18,7 @@ let genId = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop
 
 const app = express();
 
-app.set("trust proxy", "loopback, linklocal");
+app.set("trust proxy", "loopback, linklocal, 172.16.0.0/12");
 
 app.use(helmet({
     // ffs don't frick up my inline js
@@ -39,7 +39,7 @@ app.use(express.json());
 app.use("/", express.static("static"));
 
 app.post("/new", ratelimit({
-    max: REQUESTSPERMINPERIP,
+    max: parseInt(REQUESTSPERMINPERIP, 10),
     message: { status: 429 },
     keyGenerator: (req) => req.ip,
     skip: (req) => whitelist.includes(req.ip)
